@@ -5,12 +5,16 @@ const path=require('path');
 const { engine } = require('express-handlebars');
 const Handlebars = require('handlebars')
 const bodyParser = require('body-parser');
+const mongoose=require('mongoose');
+const nodemailer = require('nodemailer');
 
 const employeeController=require('./controllers/employeeController')
 // handlears
 const { allowInsecurePrototypeAccess } = require('@handlebars/allow-prototype-access');
 
 const app=express()
+const dotenv=require('dotenv');
+dotenv.config();
 // Use the bodyParser
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
@@ -22,7 +26,18 @@ app.get("/",(req,res)=>{
     res.render('home');
 })
 app.use('/employee',employeeController)
-const port=4000
-app.listen(port,()=>{
-    console.log(`server runnng on port ${port}`)
+
+
+
+
+mongoose.connect(process.env.URL),  (error) => {
+    if (!error) {
+        console.log("success connected");
+    } else {
+        console.log("Error connecting to Database");
+    }
+};
+
+app.listen(process.env.PORT || 5000,()=>{
+    console.log(`server runnng on port`)
 })
